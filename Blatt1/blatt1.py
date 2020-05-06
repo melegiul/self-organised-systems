@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
+import time
 
 import numpy as np
 import random
 import math
-import datetime
 
 # generiert eine Abstandsmatrix mittels eines Seeds
 def generator_tsp(count_cities, seed) :
@@ -25,17 +25,17 @@ def generator_tsp(count_cities, seed) :
     
     return distance_matrix
     
-# löst das TSP-Problem
+# loest das TSP-Problem
 def solve_tsp(distance_matrix) :
     print(distance_matrix)
     
-    n = len(distance_matrix) # Anzahl der Städte
+    n = len(distance_matrix) # Anzahl der Staedte
     
     # Route startet immer bei Stadt 1, da Anfang egal ist
-    # somit permutiere nur Städte 2 bis n
-    permutation = np.arange(1, n) # Startpermutation; Länge: n-1
+    # somit permutiere nur Staedte 2 bis n
+    permutation = np.arange(1, n) # Startpermutation; Laenge: n-1
     
-    # iterative Implementierung des Heap's Algorithmus für Permutationen
+    # iterative Implementierung des Heap's Algorithmus fuer Permutationen
     stack_encoding = [0] * (n-1)
     
     current_shortest = 0
@@ -47,7 +47,7 @@ def solve_tsp(distance_matrix) :
     test_counter = 0
     max_permut = math.factorial(n-1)
     
-    print(datetime.datetime.now())
+    starttime = time.time()
     
     i = 0
     while i < (n-1) :
@@ -65,28 +65,23 @@ def solve_tsp(distance_matrix) :
             if(new_route < current_shortest) :
                 current_shortest = new_route
                 optimal_route = [1]
-                optimal_route.extend([x+1 for x in permutation]) # Umwandeln der Indizes vor dem Hinzufügen
-            
-            # dient die Dauer und den Fortschritt herauszufinden
-            test_counter += 1
-            if(test_counter % 1000000 == 0) :
-                print(str(test_counter * 100 / max_permut) + "%")
-                print(datetime.datetime.now())
+                optimal_route.extend([x+1 for x in permutation]) # Umwandeln der Indizes vor dem Hinzufuegen
             
             stack_encoding[i] += 1
             i = 0
             
-        else :
+        else:
             stack_encoding[i] = 0
             i += 1
             
-    print(datetime.datetime.now())
-    print(optimal_route)
-    print(current_shortest)
+    endtime = time.time()
+    print('time: ', endtime-starttime)
+    print('optimal_route: ', optimal_route)
+    print('shortest: ', current_shortest)
             
     return current_shortest
 
-# Hilfsfunktion zum Testen, ob ein String einen Integer repräsentiert
+# Hilfsfunktion zum Testen, ob ein String einen Integer repraesentiert
 def representsInt(s):
     try: 
         int(s)
@@ -95,7 +90,7 @@ def representsInt(s):
         return False
 
 
-print("Bitte geben Sie die Anzahl der Städte ein:")
+print("Bitte geben Sie die Anzahl der Staedte ein:")
 boolean = False
 city_count = 0
 while(not boolean) :
