@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="organicComputing2:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/organicComputing2_jar</output-path>
+    <root id="archive" name="organicComputing2.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$USER_HOME$/oc2-mango/organicComputing2/META-INF/MANIFEST.MF" />
+      </element>
+    </root>
+  </artifact>
+</component>
