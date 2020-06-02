@@ -2,7 +2,7 @@ package generator;
 
 import java.util.Random;
 
-public class Matrix<T> {
+public class Matrix<T extends Comparable<T>> {
     private Object [] [] matrixValues;
     private int numberOfCities;
     private static Random generator;
@@ -63,5 +63,29 @@ public class Matrix<T> {
             System.out.println();
         }
         System.out.println();
+    }
+
+    public T getMax(){
+        Double max = Double.MIN_VALUE;
+        for(int i=0; i<this.getNumberOfCities(); i++) {
+            for (int j=i+1; j<this.getNumberOfCities(); j++) {
+                if(getValue(i,j) != null && getValue(i,j).compareTo((T) max) > 0){
+                    max = (Double) getValue(i,j);
+                }
+            }
+        }
+        return (T) max;
+    }
+
+    public T getMin(){
+        Double min = Double.MAX_VALUE;
+        for(int i=0; i<this.getNumberOfCities(); i++) {
+            for (int j=i+1; j<this.getNumberOfCities(); j++) {
+                if(getValue(i,j) != null && getValue(i,j).compareTo((T) min) < 0){
+                    min = (Double) getValue(i,j);
+                }
+            }
+        }
+        return (T) min;
     }
 }

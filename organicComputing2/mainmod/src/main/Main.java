@@ -1,6 +1,7 @@
 package main;
 
 import acs.AntColony;
+import acs.Tuple;
 import exhaustive.ExhaustiveSearch;
 import generator.Matrix;
 
@@ -58,8 +59,16 @@ public class Main {
         // initial pheromone per edge
         double tau = Double.parseDouble(args[8]);
 
-        List<Integer> distanceResult = new ArrayList(10);
-        List<List> tourResult = new ArrayList<List>(10);
+        int experimentsNum = 10;
+        List<Integer> distanceResult = new ArrayList(experimentsNum);
+        List<List> tourResult = new ArrayList<List>(experimentsNum);
+        List<List<Tuple>> distanceList = new ArrayList<>(experimentsNum);
+        List<List<Tuple>> posEmergList = new ArrayList<>(experimentsNum);
+        List<List<Tuple>> routEmergList = new ArrayList<>(experimentsNum);
+        List<List<Tuple>> pheroEmergList = new ArrayList<>(experimentsNum);
+        List<Double> positionAverage = new ArrayList<>();
+        List<Double> routeAverage = new ArrayList<>();
+        List<Double> pheromoneAverage = new ArrayList<>();
         long[] elapsedTime = new long[10];
         long elapsedSum = 0;
         long acsSeed;
@@ -68,18 +77,25 @@ public class Main {
         Matrix<Integer> distanceMatrix = new Matrix<>(numberCities);
         distanceMatrix.matrixInit();
         distanceMatrix.printMatrix();
-        for (acsSeed=1; acsSeed<=10; acsSeed++) {
+        for (acsSeed=1; acsSeed<=experimentsNum; acsSeed++) {
             Matrix<Double> pheromoneMatrix = new Matrix<>(numberCities);
             startTime = System.nanoTime();
             AntColony acs = new AntColony(distanceMatrix, pheromoneMatrix, numberAnts, iterations, q, beta, alpha, rho, tau, acsSeed);
             acs.antColonySystem();
             elapsedTime[(int)(acsSeed-1)] = System.nanoTime() - startTime;
             elapsedSum += elapsedTime[(int)(acsSeed-1)];
+            // retrieve and store shortest distance of all iterations
             distanceResult.add(acs.getBestIterationDistance());
+            // retrieve and store shortest path of all iterations
             tourResult.add(acs.getBestIterationTour());
-            System.out.println("Best Iterations Distance: " + acs.getBestIterationDistance());
-            System.out.println("Best Iterations tour: " + acs.getBestIterationTour());
-            System.out.println();
+            // retrieve and store shortest distance for each iteration
+            distanceList.add(acs.getShortestDistances());
+            posEmergList.add(acs.getPositionEmergence());
+            routEmergList.add(acs.getRouteEmergence());
+            pheroEmergList.add(acs.getPheromoneEmergence());
+//            System.out.println("Best Iterations Distance: " + acs.getBestIterationDistance());
+//            System.out.println("Best Iterations tour: " + acs.getBestIterationTour());
+//            System.out.println();
         }
         TreeSet<Integer> resultSet = new TreeSet<>(distanceResult);
         Double expectedValue = AntColony.expectedValue(distanceResult,resultSet,10);
@@ -88,6 +104,14 @@ public class Main {
         System.out.println("Shortest Distance for all seeds: " + resultSet.first());
         System.out.println("Expected Value for all seeds: " + expectedValue);
         System.out.println("Shortest Tour for all seeds: " + tourResult.get(index));
+        AntColony.averageValue(distanceList, "distance");
+        positionAverage.addAll(AntColony.averageValue(posEmergList, "position"));
+        routeAverage.addAll(AntColony.averageValue(routEmergList, "route"));
+        pheromoneAverage.addAll(AntColony.averageValue(pheroEmergList, "pheromone"));
+        Double positionAbsolute = Math.abs(positionAverage.get(9)-positionAverage.get(positionAverage.size()-1));
+        Double routeAbsolute = Math.abs(routeAverage.get(9)-routeAverage.get(routeAverage.size()-1));
+        Double pheromoneAbsolute = Math.abs(pheromoneAverage.get(9)-pheromoneAverage.get(pheromoneAverage.size()-1));
+        AntColony.writeKiviatCSV(positionAbsolute,routeAbsolute,pheromoneAbsolute);
         return;
 
     }
