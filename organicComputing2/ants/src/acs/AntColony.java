@@ -106,9 +106,6 @@ public class AntColony<T extends Comparable<T>> implements Comparator<T[]>{
                     this.routeWriter.flush();
                     this.pheromoneWriter.flush();
                     computeEmergence(i, new String[]{"position", "route", "pheromone"});
-//                    computeEmergence(i, "route");
-//                    computeEmergence(i,"pheromone");
-//                    System.out.println();
                 }
             }
             this.routeWriter.close();
@@ -141,6 +138,10 @@ public class AntColony<T extends Comparable<T>> implements Comparator<T[]>{
         return pheromoneEmergence;
     }
 
+    /**
+     * normalize all tours
+     * @param normCity
+     */
     private void rotateTour(Integer normCity) {
         for(int k=0; k<numberAnts; k++){
             LinkedList<Integer> current = new LinkedList(tour[k]);
@@ -152,25 +153,17 @@ public class AntColony<T extends Comparable<T>> implements Comparator<T[]>{
         }
     }
 
+    /**
+     * number of occurrences is saved in arraylist for each position
+     */
     private void computePositionEntropy(){
         int total = positionCounter.stream().mapToInt(Integer::intValue).sum();
         entropyFormula(positionCounter,total,"position");
-//        Double positionEntropy = 0.0;
-//        for(Integer i: positionCounter){
-//            if(i!=0) {
-//                Double x = Double.valueOf(i) / total;
-//                x *= Math.log10(x) / Math.log10(2.0);
-//                positionEntropy += x;
-//            }
-//        }
-//        positionEntropy *= -1;
-//        try{
-//            positionWriter.write(String.valueOf(positionEntropy) + "\n");
-//        } catch(IOException e) {
-//            System.out.println("Error during writing position entropy");
-//        }
     }
 
+    /**
+     * two routes are only equal if there is no difference in the track
+     */
     private void computeRouteEntropy(){
         TreeSet<Integer[]> routeSet = new TreeSet<Integer[]>(new Comparator<Integer[]>() {
             @Override
@@ -219,6 +212,10 @@ public class AntColony<T extends Comparable<T>> implements Comparator<T[]>{
         entropyFormula(routeCounter,numberAnts,"route");
     }
 
+    /**
+     *
+     * @param granularity for quantification, here space is divided in four equal sized parts
+     */
     private void computePheromoneEntropy(int granularity) {
         int numberCities = pheromoneMatrix.getNumberOfCities();
         List<Integer> counter = new ArrayList<>(Collections.nCopies(granularity,0));
@@ -253,6 +250,12 @@ public class AntColony<T extends Comparable<T>> implements Comparator<T[]>{
         entropyFormula(counter,size, "pheromone");
     }
 
+    /**
+     * use the formula for entropy and write results to corresponding log files
+     * @param p number of occurences for each single element
+     * @param size total number
+     * @param attribute
+     */
     private void entropyFormula(List<Integer> p, int size, String attribute){
         Double entropy = 0.0;
         for(Integer i: p){
@@ -282,6 +285,12 @@ public class AntColony<T extends Comparable<T>> implements Comparator<T[]>{
         }
     }
 
+    /**
+     * prints the difference of entropy to console
+     * adds tuple with emergence values to list for final presentation in diagram
+     * @param iteration
+     * @param attributeList
+     */
     private void computeEmergence(int iteration, String[] attributeList){
         for(int i=0; i<attributeList.length; i++) {
             String attribute = attributeList[i];
@@ -303,6 +312,7 @@ public class AntColony<T extends Comparable<T>> implements Comparator<T[]>{
                     lastEntropy = Double.valueOf((String) array[iteration]);
                     emergence = preEntropy - lastEntropy;
                 }
+                // a list for each attribute
                 switch (attribute){
                     case "position":
                         positionEmergence.add(new Tuple(iteration, lastEntropy-(Double)positionEmergence.get(0).getValue()));
@@ -347,6 +357,12 @@ public class AntColony<T extends Comparable<T>> implements Comparator<T[]>{
         return expectedValue;
     }
 
+    /**
+     * average over all log entries
+     * @param experimentList
+     * @param label
+     * @return
+     */
     public static List<Double> averageValue(List<List<Tuple>> experimentList, String label){
         int experimentNum = experimentList.size();
         int iterationNum = experimentList.get(0).size();
@@ -368,7 +384,7 @@ public class AntColony<T extends Comparable<T>> implements Comparator<T[]>{
         // each entry divided by number of experiments
         for(int i=0; i<iterationNum; i++){
             averageValues.set(i,averageValues.get(i)/experimentNum);
-            System.out.println(averageValues.get(i));
+//            System.out.println(averageValues.get(i));
         }
         writeValues(averageValues, label);
         return averageValues;
@@ -435,12 +451,6 @@ public class AntColony<T extends Comparable<T>> implements Comparator<T[]>{
      */
     private Integer getStart(int ant, int iter) {
         Integer startPosition = (ant+iter) % distanceMatrix.getNumberOfCities();
-//        positionCounter.set(startPosition,positionCounter.get(startPosition)+1);
-//        try {
-//            this.positionWriter.write(String.valueOf(startPosition) + "\n");
-//        } catch(IOException e) {
-//            System.out.println("Error while writing start position");
-//        }
         return startPosition;
     }
 
@@ -457,17 +467,9 @@ public class AntColony<T extends Comparable<T>> implements Comparator<T[]>{
                 Integer nextCity = chooseCity(k);
                 unvisited[k].remove(nextCity);
                 tour[k].add(nextCity);
-//                this.positionWriter.write(String.valueOf(nextCity) + "\n");
-//                positionCounter.set(nextCity,positionCounter.get(nextCity)+1);
             }
             localUpdate();
         }
-        // ants move back to start
-//        for (int k=0; k<numberAnts; k++) {
-//            Integer start = tour[k].get(0);
-//            tour[k].add(start);
-//        }
-//        localUpdate();
         globalUpdate(currentIteration);
     }
 

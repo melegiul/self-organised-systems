@@ -2,9 +2,12 @@
   <artifact type="jar" name="organicComputing2:jar">
     <output-path>$PROJECT_DIR$/out/artifacts/organicComputing2_jar</output-path>
     <root id="archive" name="organicComputing2.jar">
-      <element id="directory" name="META-INF">
-        <element id="file-copy" path="$USER_HOME$/oc2-mango/organicComputing2/META-INF/MANIFEST.MF" />
-      </element>
+      <element id="module-output" name="ants" />
+      <element id="module-output" name="tspGenerator" />
+      <element id="module-output" name="exhaustive" />
+      <element id="module-output" name="mainmod" />
+      <element id="module-output" name="organicComputing2" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/opencsv-5.2.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>
