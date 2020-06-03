@@ -285,7 +285,7 @@ public class AntColony<T extends Comparable<T>> implements Comparator<T[]>{
     private void computeEmergence(int iteration, String[] attributeList){
         for(int i=0; i<attributeList.length; i++) {
             String attribute = attributeList[i];
-            String path = String.format("/home/giuliano/oc2-mango/organicComputing2" +
+            String path = String.format(System.getProperty("user.dir") +
                     "/logs/%s/%s-1-%d.log", attribute, attribute, this.acsSeed);
             try (Stream<String> lines = Files.lines(Paths.get(path))) {
                 Object[] array;
@@ -305,13 +305,13 @@ public class AntColony<T extends Comparable<T>> implements Comparator<T[]>{
                 }
                 switch (attribute){
                     case "position":
-                        positionEmergence.add(new Tuple(iteration, emergence));
+                        positionEmergence.add(new Tuple(iteration, lastEntropy-(Double)positionEmergence.get(0).getValue()));
                         break;
                     case "route":
-                        routeEmergence.add(new Tuple(iteration, emergence));
+                        routeEmergence.add(new Tuple(iteration, lastEntropy-(Double)positionEmergence.get(0).getValue()));
                         break;
                     case "pheromone":
-                        pheromoneEmergence.add(new Tuple(iteration, emergence));
+                        pheromoneEmergence.add(new Tuple(iteration, lastEntropy-(Double)positionEmergence.get(0).getValue()));
                         break;
                     default:
                         throw new IOException();
