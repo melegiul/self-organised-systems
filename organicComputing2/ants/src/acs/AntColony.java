@@ -295,7 +295,7 @@ public class AntColony<T extends Comparable<T>> implements Comparator<T[]>{
         for(int i=0; i<attributeList.length; i++) {
             String attribute = attributeList[i];
             String path = String.format(System.getProperty("user.dir") +
-                    "/logs/%s/%s-1-%d.log", attribute, attribute, this.acsSeed);
+                    "/logs/%s-1-%d.log", attribute, this.acsSeed);
             try (Stream<String> lines = Files.lines(Paths.get(path))) {
                 Object[] array;
                 Double preEntropy;
@@ -396,11 +396,11 @@ public class AntColony<T extends Comparable<T>> implements Comparator<T[]>{
     private void acsInit() {
         try{
             String positionPath = String.format(System.getProperty("user.dir") +
-                    "/logs/position/position-1-%d.log", this.acsSeed);
+                    "/logs/position-1-%d.log", this.acsSeed);
             String routePath = String.format(System.getProperty("user.dir") +
-                    "/logs/route/route-1-%d.log", this.acsSeed);
+                    "/logs/route-1-%d.log", this.acsSeed);
             String pheromonePath = String.format(System.getProperty("user.dir") +
-                    "/logs/pheromone/pheromone-1-%d.log", this.acsSeed);
+                    "/logs/pheromone-1-%d.log", this.acsSeed);
             this.positionFile = new File(positionPath);
             this.routeFile = new File(routePath);
             this.pheromoneFile = new File(pheromonePath);
