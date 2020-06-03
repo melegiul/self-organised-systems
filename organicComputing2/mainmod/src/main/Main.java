@@ -108,9 +108,9 @@ public class Main {
         positionAverage.addAll(AntColony.averageValue(posEmergList, "position"));
         routeAverage.addAll(AntColony.averageValue(routEmergList, "route"));
         pheromoneAverage.addAll(AntColony.averageValue(pheroEmergList, "pheromone"));
-        Double positionAbsolute = Math.abs(positionAverage.get(9)-positionAverage.get(positionAverage.size()-1));
-        Double routeAbsolute = Math.abs(routeAverage.get(9)-routeAverage.get(routeAverage.size()-1));
-        Double pheromoneAbsolute = Math.abs(pheromoneAverage.get(9)-pheromoneAverage.get(pheromoneAverage.size()-1));
+        Double positionAbsolute = Math.abs(positionAverage.get(positionAverage.size()-1)-positionAverage.get(1));
+        Double routeAbsolute = Math.abs(routeAverage.get(routeAverage.size()-1)-routeAverage.get(1));
+        Double pheromoneAbsolute = Math.abs(pheromoneAverage.get(pheromoneAverage.size()-1)-pheromoneAverage.get(1));
         AntColony.writeKiviatCSV(positionAbsolute,routeAbsolute,pheromoneAbsolute);
         return;
 
