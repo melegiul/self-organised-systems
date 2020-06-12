@@ -41,13 +41,6 @@ public class AntColony<T extends Comparable<T>> implements Comparator<T[]>{
     FileWriter routeWriter;
     FileWriter pheromoneWriter;
 
-//    File posEmergFile;
-//    File routEmergFile;
-//    File pheroEmergFile;
-//    FileWriter posEmergWriter;
-//    FileWriter routEmergWriter;
-//    FileWriter pheroEmergWriter;
-
     private final int numberAnts;
     private long acsSeed;
     private Random qGenerator;
@@ -101,11 +94,13 @@ public class AntColony<T extends Comparable<T>> implements Comparator<T[]>{
                 computePositionEntropy();
                 computeRouteEntropy();
                 computePheromoneEntropy(4);
+                this.positionWriter.flush();
+                this.routeWriter.flush();
+                this.pheromoneWriter.flush();
                 if (i>=1) {
-                    this.positionWriter.flush();
-                    this.routeWriter.flush();
-                    this.pheromoneWriter.flush();
                     computeEmergence(i, new String[]{"position", "route", "pheromone"});
+                } else {
+                    initialEmergence(new String[]{"position", "route", "pheromone"});
                 }
             }
             this.routeWriter.close();
@@ -218,6 +213,7 @@ public class AntColony<T extends Comparable<T>> implements Comparator<T[]>{
      */
     private void computePheromoneEntropy(int granularity) {
         int numberCities = pheromoneMatrix.getNumberOfCities();
+        // counts occurrences for each part
         List<Integer> counter = new ArrayList<>(Collections.nCopies(granularity,0));
         Double maxPheromone = pheromoneMatrix.getMax();
         Double minPheromone = pheromoneMatrix.getMin();
@@ -231,10 +227,12 @@ public class AntColony<T extends Comparable<T>> implements Comparator<T[]>{
             else
                 quantification[i] = quantification[i-1] + (pheromoneDif/granularity);
         }
+        // for each pheromone entry
         for (int i=0; i<numberCities; i++) {
             for (int j=i+1; j<numberCities; j++) {
                 int k=0;
                 Double pheromone = pheromoneMatrix.getValue(i,j);
+                // determine the corresponding area
                 while(pheromone > quantification[k]){
                     k++;
                 }
@@ -244,6 +242,7 @@ public class AntColony<T extends Comparable<T>> implements Comparator<T[]>{
             }
         }
         int size = 0;
+        // size: number of pheromone entries
         for (int i=0; i<numberCities; i++){
             size+=i;
         }
@@ -285,6 +284,35 @@ public class AntColony<T extends Comparable<T>> implements Comparator<T[]>{
         }
     }
 
+    private void initialEmergence(String[] attributeList){
+        for(int i=0; i<attributeList.length; i++) {
+            String attribute = attributeList[i];
+            String path = String.format(System.getProperty("user.dir") +
+                    "/logs/%s/%s-1-%d.log", attribute, attribute, this.acsSeed);
+            try (Stream<String> lines = Files.lines(Paths.get(path))) {
+                Optional<String> initialEntropy = lines.findFirst();
+                Double value = Double.valueOf(initialEntropy.get());
+//                value = 0.0;
+                // a list for each attribute
+                switch (attribute){
+                    case "position":
+                        positionEmergence.add(new Tuple(0, value));
+                        break;
+                    case "route":
+                        routeEmergence.add(new Tuple(0, value));
+                        break;
+                    case "pheromone":
+                        pheromoneEmergence.add(new Tuple(0, value));
+                        break;
+                    default:
+                        throw new IOException();
+                }
+            } catch (Exception e) {
+                System.out.println("Error: writing emergence failed or no such element");
+            }
+        }
+    }
+
     /**
      * prints the difference of entropy to console
      * adds tuple with emergence values to list for final presentation in diagram
@@ -295,7 +323,7 @@ public class AntColony<T extends Comparable<T>> implements Comparator<T[]>{
         for(int i=0; i<attributeList.length; i++) {
             String attribute = attributeList[i];
             String path = String.format(System.getProperty("user.dir") +
-                    "/logs/%s-1-%d.log", attribute, this.acsSeed);
+                    "/logs/%s/%s-1-%d.log", attribute, attribute, this.acsSeed);
             try (Stream<String> lines = Files.lines(Paths.get(path))) {
                 Object[] array;
                 Double preEntropy;
@@ -318,10 +346,10 @@ public class AntColony<T extends Comparable<T>> implements Comparator<T[]>{
                         positionEmergence.add(new Tuple(iteration, lastEntropy-(Double)positionEmergence.get(0).getValue()));
                         break;
                     case "route":
-                        routeEmergence.add(new Tuple(iteration, lastEntropy-(Double)positionEmergence.get(0).getValue()));
+                        routeEmergence.add(new Tuple(iteration, lastEntropy-(Double)routeEmergence.get(0).getValue()));
                         break;
                     case "pheromone":
-                        pheromoneEmergence.add(new Tuple(iteration, lastEntropy-(Double)positionEmergence.get(0).getValue()));
+                        pheromoneEmergence.add(new Tuple(iteration, lastEntropy-(Double)pheromoneEmergence.get(0).getValue()));
                         break;
                     default:
                         throw new IOException();
@@ -384,7 +412,6 @@ public class AntColony<T extends Comparable<T>> implements Comparator<T[]>{
         // each entry divided by number of experiments
         for(int i=0; i<iterationNum; i++){
             averageValues.set(i,averageValues.get(i)/experimentNum);
-//            System.out.println(averageValues.get(i));
         }
         writeValues(averageValues, label);
         return averageValues;
@@ -396,11 +423,11 @@ public class AntColony<T extends Comparable<T>> implements Comparator<T[]>{
     private void acsInit() {
         try{
             String positionPath = String.format(System.getProperty("user.dir") +
-                    "/logs/position-1-%d.log", this.acsSeed);
+                    "/logs/position/position-1-%d.log", this.acsSeed);
             String routePath = String.format(System.getProperty("user.dir") +
-                    "/logs/route-1-%d.log", this.acsSeed);
+                    "/logs/route/route-1-%d.log", this.acsSeed);
             String pheromonePath = String.format(System.getProperty("user.dir") +
-                    "/logs/pheromone-1-%d.log", this.acsSeed);
+                    "/logs/pheromone/pheromone-1-%d.log", this.acsSeed);
             this.positionFile = new File(positionPath);
             this.routeFile = new File(routePath);
             this.pheromoneFile = new File(pheromonePath);
@@ -417,12 +444,12 @@ public class AntColony<T extends Comparable<T>> implements Comparator<T[]>{
             }
         }
         // set emergence value for first 9 iterations to zero
-        for(int i=0; i<1; i++){
-            Tuple<Double> tuple = new Tuple<>(i,0.0);
-            positionEmergence.add(tuple);
-            routeEmergence.add(tuple);
-            pheromoneEmergence.add(tuple);
-        }
+//        for(int i=0; i<1; i++){
+//            Tuple<Double> tuple = new Tuple<>(i,0.0);
+//            positionEmergence.add(tuple);
+//            routeEmergence.add(tuple);
+//            pheromoneEmergence.add(tuple);
+//        }
     }
 
     /**
@@ -670,7 +697,6 @@ public class AntColony<T extends Comparable<T>> implements Comparator<T[]>{
             File file = new File(path);
             FileWriter writer = new FileWriter(file);
             int i=1;
-//            CSVWriter csvWriter =
             writer.write("iteration" + "," + "value" + "\n");
             for(Double d: averageValue){
                 writer.write(String.valueOf(i++) + "," + String.valueOf(d) + "\n");
