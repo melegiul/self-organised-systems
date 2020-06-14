@@ -1,3 +1,0 @@
-module tspGenerator {
-    exports generator;
-}
