@@ -458,6 +458,8 @@ public class AntColony<T extends Comparable<T>> implements Comparator<T[]>{
      */
     private Integer getStart(int ant, int iter) {
         Integer startPosition = (ant+iter) % distanceMatrix.getNumberOfCities();
+//        int index = startPosition;
+//        positionCounter.set(startPosition,positionCounter.get(index)+1);
         return startPosition;
     }
 
@@ -504,7 +506,7 @@ public class AntColony<T extends Comparable<T>> implements Comparator<T[]>{
                 predecessorCity = tour[k].get(tourLength - 1);
                 // update position array after each iteration
                 // is the last visited city before moving to start
-//                positionCounter.set(predecessorCity,positionCounter.get(predecessorCity)+1);
+                positionCounter.set(predecessorCity,positionCounter.get(predecessorCity)+1);
                 // pheromone of a single edge
                 currentPheromone = pheromoneMatrix.getValue(nextCity,predecessorCity);
                 // evaporate pheromone
