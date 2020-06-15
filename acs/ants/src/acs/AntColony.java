@@ -310,7 +310,7 @@ public class AntColony<T extends Comparable<T>> implements Comparator<T[]>{
                         positionEmergence.add(new Tuple(0, value));
                         break;
                     case "route":
-                        routeEmergence.add(new Tuple(0, value));
+                        routeEmergence.add(new Tuple(0, 0.0));
                         break;
                     case "pheromone":
                         pheromoneEmergence.add(new Tuple(0, value));
