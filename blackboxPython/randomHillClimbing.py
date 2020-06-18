@@ -20,12 +20,40 @@ class RandomHillClimber:
         self.avg = []
         
     def initHC(self, bb, dim):
+        """
+        execute ten experiments and set average values
+
+        Parameters
+        ----------
+        bb : running blackbox process
+        dim : int
+            size of input vector
+
+        Returns
+        -------
+        None.
+
+        """ 
         for i in range(10):
             out = self.randomHC(bb, dim)
             self.matrix.append(out)
         self.avg = utility.avgValues(self.matrix)
         
     def randomHC(self, bb, dim):
+        """ retrieve results from steepest hill climber
+
+        Parameters
+        ----------
+        bb : running blackbox process
+        dim : int
+            size of input vector
+
+        Returns
+        -------
+        result : list
+            measured blackbox output
+
+        """
         result = []
         minValue = sys.float_info.max
         for i in range(int(self.i_max/self.j_max)):
