@@ -1,0 +1,201 @@
+\documentclass[
+fontsize=12pt,          % Schriftgröße
+paper=a4,               % Papiergröße
+captions=tableabove,    % Beschriftungen für Tabellen oberhalb
+titlepage=firstiscover, % Titelseite ist Umschlagseite
+BCOR=5mm,               % Korrektur für Bundsteg
+toc=listof,             % Abbildungs- und Tabellenverzeichnis im Inhaltsverzeichnis
+open=right,             % Kapitel beginnen auf rechter Seite
+]{scrreprt}
+
+% ----------------------------------------------------
+% Essential packages
+% ----------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{verbatim}
+
+% ----------------------------------------------------
+% Packages for layout adjustments
+% ----------------------------------------------------
+
+% Adjust line spacing
+\usepackage{setspace}
+
+% Publication quality tables
+\usepackage{booktabs}
+\usepackage[utf8]{inputenc}
+
+% ----------------------------------------------------
+% Fonts
+% ----------------------------------------------------
+\usepackage{lmodern}
+\usepackage{roboto}
+
+% further packages
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\DeclarePairedDelimiter{\card}{\lvert}{\rvert}
+\usepackage{subfigure}
+
+% diagram packages
+\usepackage{siunitx}
+\usepackage{tikz}
+\usepackage{pgfplots, filecontents}
+
+\pgfplotsset{compat=newest} % Allows to place the legend below plot
+\usepgfplotslibrary{units} % Allows to enter the units nicely
+
+\begin{document}
+	%\chapter{Aufgabe 4}
+	\begin{tikzpicture}
+	\begin{axis}[
+	width=7cm, % Scale the plot to \linewidth
+	grid=major, % Display a grid
+	legend entries={simple,gray,none},
+	grid style={dashed,gray!30}, % Set the style
+	%xlabel=Iteration, % Set the labels
+	%ylabel=Optimumfitness,
+	%legend style={at={(0.5,-0.2)},anchor=north}, % Put the legend below the plot
+	x tick label style={rotate=90,anchor=east} % Display labels sideways
+	]
+	\addplot 
+	% add a plot from table; you select the columns by using the actual name in
+	% the .csv file (on top)
+	+[restrict expr to domain={\coordindex}{0:50}]
+	table[x=iteration,y=value,col sep=comma] {/home/giuliano/oc2-mango/blackboxPython/ga_simple/bb0.csv}; 
+	\addplot 
+	% add a plot from table; you select the columns by using the actual name in
+	% the .csv file (on top)
+	+[restrict expr to domain={\coordindex}{0:50}]
+	table[x=iteration,y=value,col sep=comma] {/home/giuliano/oc2-mango/blackboxPython/ga_gray/bb0.csv};
+	\addplot 
+	% add a plot from table; you select the columns by using the actual name in
+	% the .csv file (on top)
+	+[restrict expr to domain={\coordindex}{0:50}]
+	table[x=iteration,y=value,col sep=comma] {/home/giuliano/oc2-mango/blackboxPython/ga_none/bb0.csv};
+	%\legend{Plot}
+	\end{axis}
+	\end{tikzpicture}
+	\begin{tikzpicture}
+	\begin{axis}[
+	width=7cm, % Scale the plot to \linewidth
+	grid=major, % Display a grid
+	legend entries={simple,gray,none},
+	grid style={dashed,gray!30}, % Set the style
+	%xlabel=Iteration, % Set the labels
+	%ylabel=Optimumfitness,
+	%legend style={at={(0.5,-0.2)},anchor=north}, % Put the legend below the plot
+	x tick label style={rotate=90,anchor=east} % Display labels sideways
+	]
+	\addplot 
+	% add a plot from table; you select the columns by using the actual name in
+	% the .csv file (on top)
+	+[restrict expr to domain={\coordindex}{0:50}]
+	table[x=iteration,y=value,col sep=comma] {/home/giuliano/oc2-mango/blackboxPython/ga_simple/bb1.csv}; 
+	\addplot 
+	% add a plot from table; you select the columns by using the actual name in
+	% the .csv file (on top)
+	+[restrict expr to domain={\coordindex}{0:50}]
+	table[x=iteration,y=value,col sep=comma] {/home/giuliano/oc2-mango/blackboxPython/ga_gray/bb1.csv};
+	\addplot 
+	% add a plot from table; you select the columns by using the actual name in
+	% the .csv file (on top)
+	+[restrict expr to domain={\coordindex}{0:50}]
+	table[x=iteration,y=value,col sep=comma] {/home/giuliano/oc2-mango/blackboxPython/ga_none/bb1.csv};
+	%\legend{Plot}
+	\end{axis}
+	\end{tikzpicture}
+	\newline
+	\begin{tikzpicture}
+	\begin{axis}[
+	width=7cm, % Scale the plot to \linewidth
+	grid=major, % Display a grid
+	legend entries={simple,gray,none},
+	grid style={dashed,gray!30}, % Set the style
+	%xlabel=Iteration, % Set the labels
+	%ylabel=Optimumfitness,
+	%legend style={at={(0.5,-0.2)},anchor=north}, % Put the legend below the plot
+	x tick label style={rotate=90,anchor=east} % Display labels sideways
+	]
+	\addplot 
+	% add a plot from table; you select the columns by using the actual name in
+	% the .csv file (on top)
+	+[restrict expr to domain={\coordindex}{0:50}]
+	table[x=iteration,y=value,col sep=comma] {/home/giuliano/oc2-mango/blackboxPython/ga_simple/bb2.csv}; 
+	\addplot 
+	% add a plot from table; you select the columns by using the actual name in
+	% the .csv file (on top)
+	+[restrict expr to domain={\coordindex}{0:50}]
+	table[x=iteration,y=value,col sep=comma] {/home/giuliano/oc2-mango/blackboxPython/ga_gray/bb2.csv};
+	\addplot 
+	% add a plot from table; you select the columns by using the actual name in
+	% the .csv file (on top)
+	+[restrict expr to domain={\coordindex}{0:50}]
+	table[x=iteration,y=value,col sep=comma] {/home/giuliano/oc2-mango/blackboxPython/ga_none/bb2.csv};
+	%\legend{Plot}
+	\end{axis}
+	\end{tikzpicture}
+	\begin{tikzpicture}
+	\begin{axis}[
+	width=7cm, % Scale the plot to \linewidth
+	grid=major, % Display a grid
+	legend entries={simple,gray,none},
+	grid style={dashed,gray!30}, % Set the style
+	%xlabel=Iteration, % Set the labels
+	%ylabel=Optimumfitness,
+	%legend style={at={(0.5,-0.2)},anchor=north}, % Put the legend below the plot
+	x tick label style={rotate=90,anchor=east} % Display labels sideways
+	]
+	\addplot 
+	% add a plot from table; you select the columns by using the actual name in
+	% the .csv file (on top)
+	+[restrict expr to domain={\coordindex}{0:50}]
+	table[x=iteration,y=value,col sep=comma] {/home/giuliano/oc2-mango/blackboxPython/ga_simple/bb3.csv}; 
+	\addplot 
+	% add a plot from table; you select the columns by using the actual name in
+	% the .csv file (on top)
+	+[restrict expr to domain={\coordindex}{0:50}]
+	table[x=iteration,y=value,col sep=comma] {/home/giuliano/oc2-mango/blackboxPython/ga_gray/bb3.csv};
+	\addplot 
+	% add a plot from table; you select the columns by using the actual name in
+	% the .csv file (on top)
+	+[restrict expr to domain={\coordindex}{0:50}]
+	table[x=iteration,y=value,col sep=comma] {/home/giuliano/oc2-mango/blackboxPython/ga_none/bb3.csv};
+	%\legend{Plot}
+	\end{axis}
+	\end{tikzpicture}
+	\newline
+	\begin{tikzpicture}
+	\begin{axis}[
+	width=7cm, % Scale the plot to \linewidth
+	grid=major, % Display a grid
+	legend entries={simple,gray,none},
+	grid style={dashed,gray!30}, % Set the style
+	%xlabel=Iteration, % Set the labels
+	%ylabel=Optimumfitness,
+	%legend style={at={(0.5,-0.2)},anchor=north}, % Put the legend below the plot
+	x tick label style={rotate=90,anchor=east} % Display labels sideways
+	]
+	\addplot 
+	% add a plot from table; you select the columns by using the actual name in
+	% the .csv file (on top)
+	+[restrict expr to domain={\coordindex}{0:50}]
+	table[x=iteration,y=value,col sep=comma] {/home/giuliano/oc2-mango/blackboxPython/ga_simple/bb4.csv}; 
+	\addplot 
+	% add a plot from table; you select the columns by using the actual name in
+	% the .csv file (on top)
+	+[restrict expr to domain={\coordindex}{0:50}]
+	table[x=iteration,y=value,col sep=comma] {/home/giuliano/oc2-mango/blackboxPython/ga_gray/bb4.csv};
+	\addplot 
+	% add a plot from table; you select the columns by using the actual name in
+	% the .csv file (on top)
+	+[restrict expr to domain={\coordindex}{0:50}]
+	table[x=iteration,y=value,col sep=comma] {/home/giuliano/oc2-mango/blackboxPython/ga_none/bb4.csv};
+	%\legend{Plot}
+	\end{axis}
+	\end{tikzpicture}
+	%\end{comment}
+	
+\end{document}

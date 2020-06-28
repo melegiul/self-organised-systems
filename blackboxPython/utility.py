@@ -12,12 +12,12 @@ import random
 def initVector(dim): 
     vector = []
     for i in range(dim):
-        vector.append(random.randrange(-100,101))
+        vector.append(round(random.uniform(-100,101),2))
     return vector
 
 def selectNeighbour(vector, stride):
     for i in range(len(vector)):
-        vector[i] += random.randrange(-2*stride,2*stride)
+        vector[i] += round(random.uniform(-2*stride,2*stride), 2)
     return vector
     
 

@@ -14,6 +14,7 @@ import simpleHillClimbing as simple
 import steepHillClimbing as steep
 import randomHillClimbing as randomHC
 import simulatedAnnealing as sa 
+import geneticAlgorithm as ga
 
 def initInput(dimensions):
     """
@@ -146,21 +147,61 @@ def initAnnealing(dimensions, stride, i_max, eta, alpha, cooling):
         saInstance.initSA(process, bb_dim)
         writeCSV(saInstance.avg, bb_id, "annealing", stride, cooling=cooling, eta=eta, alpha=alpha)
         process.terminate()
+        
+def initGA(dimensions, population_size, i_max, tournament_size, parent_num, precision, encoder, stride):
+    """
+    starts Simulated Annealing for each blackbox and writes output to csv file
+
+    Parameters
+    ----------
+    dimensions : dictionary
+        key: blackbox_id
+        value: size of input vector
+
+    Returns
+    -------
+    None.
+
+    """
+    for bb_id, bb_dim in dimensions.items():
+        process = runBlackBox(bb_id)
+        gaInstance = ga.GeneticAlgorithm(population_size, 
+                                  i_max, 
+                                  tournament_size, 
+                                  parent_num, 
+                                  precision,
+                                  encoder,
+                                  stride)
+        gaInstance.initGA(process, bb_dim)
+        writeCSV(gaInstance.avg, bb_id, encoder)
+        process.terminate()
                 
 def main():
     dimensions = {0:3, 1:5, 2:2, 3:10, 4:2}
-    stride = 10
-    i_max = 500
-    j_max = 50
-    eta = 0.8
-    alpha = 0.8
-    cooling = "exponentially"
+    # stride = 10
+    # i_max = 500
+    # j_max = 50
+    # eta = 0.8
+    # alpha = 0.8
+    # cooling = "exponentially"
+    population_size = 10
+    ga_i_max = 500
+    tournament_size = 2
+    parent_num = 6
+    precision = 2
+    encoder = "ga_none"
+    stride = 3
     #initSimpleHC(dimensions, stride, i_max)
     #initSteepestHC(dimensions, stride, i_max)
     #initRandomtHC(dimensions, stride, i_max, j_max)
-    initAnnealing(dimensions, stride, i_max, eta, alpha, cooling)
+    #initAnnealing(dimensions, stride, i_max, eta, alpha, cooling)
     #result = initInput(dimensions)
     #initOptimize(dimensions)
+    initGA(dimensions, population_size, ga_i_max, 
+            tournament_size, parent_num, precision,
+            encoder, stride)
+    
+    
     
 def runBlackBox(bb_id):
     string = 'docker run -i bb -b {bb}'.format(bb=bb_id)
@@ -172,7 +213,7 @@ def runBlackBox(bb_id):
                   text=True)
     return bb
     
-def writeCSV(array, bb_id, opt_type, strideVal, j_max_val=0, cooling=None, eta=None, alpha=None):
+def writeCSV(array, bb_id, opt_type, strideVal=0, j_max_val=0, cooling=None, eta=None, alpha=None):
     """
     writes result into csv file
 
@@ -200,7 +241,9 @@ def writeCSV(array, bb_id, opt_type, strideVal, j_max_val=0, cooling=None, eta=N
     None.
 
     """
-    if j_max_val == 0 and cooling == None:
+    if opt_type == "ga_simple" or opt_type == "ga_gray" or opt_type == "ga_none":
+        fileName = './{folder}/bb{bbid}.csv'.format(bbid=bb_id, folder=opt_type)
+    elif j_max_val == 0 and cooling == None:
         fileName = './{folder}/bb{bbid}-{stride}.csv'.format(bbid=bb_id, folder=opt_type, stride=strideVal)
     elif cooling == None:
         fileName = './{folder}/bb{bbid}-{stride}-{j_max}.csv'.format(bbid=bb_id, folder=opt_type, stride=strideVal, j_max=j_max_val)
